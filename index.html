@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Peachy Timmy — peachy chaos, soft tease, quick snaps, private updates, and sweet links."
+    />
+    <meta id="themeColorMeta" name="theme-color" content="#fff1e6" />
+
+    <meta property="og:title" content="Peachy Timmy" />
+    <meta property="og:description" content="🍑 peachy chaos • soft tease • bad ideas" />
+    <meta property="og:url" content="https://peachy-timmy.github.io/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://peachy-timmy.github.io/1x1_lightpic.jpg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Peachy Timmy" />
+    <meta name="twitter:description" content="🍑 peachy chaos • soft tease • bad ideas" />
+    <meta name="twitter:image" content="https://peachy-timmy.github.io/1x1_lightpic.jpg" />
+
+    <link rel="canonical" href="https://peachy-timmy.github.io/" />
+
+    <title>Peachy Timmy | Sweet Links</title>
+
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <script>
+      const GA_MEASUREMENT_ID = "G-Z02Y2MPX8D";
+
+      const profilePictures = {
+        light: "1x1_lightpic.jpg",
+        dark: "1x1_darkpic.jpg"
+      };
+
+      const baseLinks = {
+        snapchat:
+          "https://www.snapchat.com/add/REPLACE_WITH_TIMMY_SNAPCHAT",
+        instagram: "https://www.instagram.com/REPLACE_WITH_TIMMY_INSTAGRAM/",
+        x: "https://x.com/REPLACE_WITH_TIMMY_X",
+        telegram: "https://t.me/REPLACE_WITH_TIMMY_TELEGRAM"
+      };
+
+      const linkTracking = {
+        snapchat: {
+          name: "snapchat",
+          medium: "social_button",
+          campaign: "snapchat_quick_snaps",
+          content: "main_links_top",
+          area: "main_area",
+          type: "social",
+          platform: "snapchat"
+        },
+        instagram: {
+          name: "instagram",
+          medium: "social_button",
+          campaign: "instagram_daily_glow",
+          content: "main_links",
+          area: "main_area",
+          type: "social",
+          platform: "instagram"
+        },
+        x: {
+          name: "x",
+          medium: "social_button",
+          campaign: "x_teasers_updates",
+          content: "main_links",
+          area: "main_area",
+          type: "social",
+          platform: "x"
+        },
+        telegram: {
+          name: "telegram",
+          medium: "social_button",
+          campaign: "telegram_private_updates",
+          content: "main_links",
+          area: "main_area",
+          type: "social",
+          platform: "telegram"
+        }
+      };
+
+      const pageLoadedAt = Date.now();
+
+      let analyticsEnabled = false;
+      let analyticsInitialized = false;
+      let firstClickTracked = false;
+      let currentTrackedTheme = null;
+      let themeStartedAt = Date.now();
+      let themeLastSentAt = Date.now();
+
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+
+      function getCurrentTheme() {
+        return document.documentElement.dataset.theme || "light";
+      }
+
+      function getCurrentPanelIndex() {
+        return 0;
+      }
+
+      function getCurrentPanelName() {
+        return "main_area";
+      }
+
+      function buildTrackedUrl(key) {
+        const baseUrl = baseLinks[key];
+        const tracking = linkTracking[key];
+
+        if (!baseUrl || !tracking) return "#";
+
+        const url = new URL(baseUrl);
+
+        url.searchParams.set("utm_source", "peachy_timmy_hub");
+        url.searchParams.set("utm_medium", tracking.medium);
+        url.searchParams.set("utm_campaign", tracking.campaign);
+        url.searchParams.set("utm_content", tracking.content);
+
+        return url.toString();
+      }
+
+      function loadGoogleAnalytics() {
+        if (analyticsInitialized) return;
+
+        analyticsInitialized = true;
+        analyticsEnabled = true;
+
+        const gaScript = document.createElement("script");
+        gaScript.async = true;
+        gaScript.src =
+          "https://www.googletagmanager.com/gtag/js?id=" + GA_MEASUREMENT_ID;
+        document.head.appendChild(gaScript);
+
+        gtag("js", new Date());
+        gtag("config", GA_MEASUREMENT_ID, {
+          anonymize_ip: true
+        });
+      }
+
+      function trackEvent(eventName, eventParams = {}) {
+        if (!analyticsEnabled || typeof gtag !== "function") return;
+
+        gtag("event", eventName, {
+          brand: "peachy_timmy",
+          theme: getCurrentTheme(),
+          transport_type: "beacon",
+          ...eventParams
+        });
+      }
+
+      function trackTimeToFirstClick() {
+        if (firstClickTracked) return;
+
+        firstClickTracked = true;
+
+        trackEvent("time_to_first_click", {
+          seconds: Math.round((Date.now() - pageLoadedAt) / 1000),
+          panel_name: getCurrentPanelName(),
+          panel_index: getCurrentPanelIndex()
+        });
+      }
+
+      function trackLinkClick(key, linkUrl) {
+        const tracking = linkTracking[key];
+
+        if (!tracking) return;
+
+        trackTimeToFirstClick();
+
+        trackEvent("outbound_click", {
+          link_name: tracking.name,
+          link_url: linkUrl,
+          link_medium: tracking.medium,
+          link_campaign: tracking.campaign,
+          link_content: tracking.content,
+          link_type: tracking.type,
+          area_name: tracking.area,
+          panel_name: getCurrentPanelName(),
+          panel_index: getCurrentPanelIndex()
+        });
+
+        if (tracking.type === "social") {
+          trackEvent("social_click", {
+            platform: tracking.platform,
+            link_name: tracking.name,
+            link_url: linkUrl,
+            area_name: tracking.area
+          });
+        }
+      }
+
+      function trackThemeView(theme) {
+        trackEvent("theme_view", {
+          viewed_theme: theme
+        });
+      }
+
+      function trackThemeChange(fromTheme, toTheme) {
+        trackEvent("theme_change", {
+          from_theme: fromTheme,
+          to_theme: toTheme
+        });
+      }
+
+      function trackThemeTime(reason) {
+        if (!currentTrackedTheme) return;
+
+        const now = Date.now();
+        const durationSeconds = Math.round((now - themeLastSentAt) / 1000);
+
+        if (durationSeconds < 2) return;
+
+        trackEvent("theme_time", {
+          viewed_theme: currentTrackedTheme,
+          duration_seconds: durationSeconds,
+          reason: reason
+        });
+
+        themeLastSentAt = now;
+      }
+
+      function resetThemeTimer(theme) {
+        const now = Date.now();
+
+        currentTrackedTheme = theme;
+        themeStartedAt = now;
+        themeLastSentAt = now;
+      }
+
+      function initializeThemeTracking(theme) {
+        if (!analyticsEnabled) return;
+
+        resetThemeTimer(theme);
+        trackThemeView(theme);
+      }
+
+      function applyTrackedLinks() {
+        const links = document.querySelectorAll("[data-link-key]");
+
+        links.forEach(function (link) {
+          const key = link.dataset.linkKey;
+          const tracking = linkTracking[key];
+
+          if (!tracking) return;
+
+          const trackedUrl = buildTrackedUrl(key);
+
+          link.href = trackedUrl;
+
+          link.addEventListener("click", function () {
+            trackLinkClick(key, trackedUrl);
+          });
+        });
+      }
+
+      function setupButtonImpressionTracking() {
+        const buttons = document.querySelectorAll("[data-link-key]");
+
+        if (!analyticsEnabled || !("IntersectionObserver" in window)) return;
+
+        const seenButtons = new Set();
+
+        const observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting || entry.intersectionRatio < 0.55) return;
+
+              const button = entry.target;
+              const key = button.dataset.linkKey;
+              const tracking = linkTracking[key];
+
+              if (!tracking || seenButtons.has(key)) return;
+
+              seenButtons.add(key);
+
+              trackEvent("button_impression", {
+                link_name: tracking.name,
+                link_medium: tracking.medium,
+                link_campaign: tracking.campaign,
+                link_content: tracking.content,
+                link_type: tracking.type,
+                area_name: tracking.area,
+                panel_name: getCurrentPanelName(),
+                panel_index: getCurrentPanelIndex()
+              });
+
+              observer.unobserve(button);
+            });
+          },
+          {
+            threshold: [0.55]
+          }
+        );
+
+        buttons.forEach(function (button) {
+          observer.observe(button);
+        });
+      }
+
+      function updateThemeMeta(theme) {
+        const themeColorMeta = document.getElementById("themeColorMeta");
+
+        if (!themeColorMeta) return;
+
+        themeColorMeta.setAttribute(
+          "content",
+          theme === "dark" ? "#080506" : "#fff1e6"
+        );
+      }
+
+      function updateProfilePicture(theme) {
+        const profileImage = document.getElementById("profileImage");
+
+        if (!profileImage) return;
+
+        profileImage.src =
+          theme === "dark" ? profilePictures.dark : profilePictures.light;
+      }
+
+      function setTheme(theme, options = {}) {
+        const previousTheme = getCurrentTheme();
+        const shouldTrackChange = options.trackChange === true;
+
+        if (shouldTrackChange && previousTheme !== theme) {
+          trackThemeTime("theme_change");
+          trackThemeChange(previousTheme, theme);
+          resetThemeTimer(theme);
+        }
+
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem("peachy_timmy_theme", theme);
+        updateThemeMeta(theme);
+        updateProfilePicture(theme);
+
+        const icon = document.querySelector(".themeIcon");
+        const label = document.querySelector(".themeLabel");
+
+        if (!icon || !label) return;
+
+        if (theme === "dark") {
+          icon.textContent = "☀️";
+          label.textContent = "Light";
+        } else {
+          icon.textContent = "🌙";
+          label.textContent = "Dark";
+        }
+      }
+
+      function toggleTheme() {
+        const currentTheme = getCurrentTheme();
+        const nextTheme = currentTheme === "dark" ? "light" : "dark";
+
+        setTheme(nextTheme, {
+          trackChange: true
+        });
+      }
+
+      function openLegalPanel(panelName) {
+        const legalOverlay = document.getElementById("legalOverlay");
+        const panels = document.querySelectorAll(".legalPanel");
+
+        if (!legalOverlay) return;
+
+        panels.forEach(function (panel) {
+          panel.hidden = panel.dataset.legalPanel !== panelName;
+        });
+
+        legalOverlay.classList.add("isOpen");
+        legalOverlay.setAttribute("aria-hidden", "false");
+        document.body.classList.add("noScroll");
+      }
+
+      function closeLegalPanel() {
+        const legalOverlay = document.getElementById("legalOverlay");
+
+        if (!legalOverlay) return;
+
+        legalOverlay.classList.remove("isOpen");
+        legalOverlay.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("noScroll");
+      }
+
+      function handleLegalOverlayClick(event) {
+        if (event.target && event.target.id === "legalOverlay") {
+          closeLegalPanel();
+        }
+      }
+
+      (function () {
+        const savedTheme = localStorage.getItem("peachy_timmy_theme") || "light";
+        document.documentElement.dataset.theme = savedTheme;
+      })();
+
+      window.addEventListener("DOMContentLoaded", function () {
+        const initialTheme = getCurrentTheme();
+
+        loadGoogleAnalytics();
+
+        setTheme(initialTheme, {
+          trackChange: false
+        });
+
+        applyTrackedLinks();
+        initializeThemeTracking(initialTheme);
+        setupButtonImpressionTracking();
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") {
+            closeLegalPanel();
+          }
+        });
+      });
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") {
+          trackThemeTime("visibility_hidden");
+        }
+
+        if (document.visibilityState === "visible") {
+          themeLastSentAt = Date.now();
+        }
+      });
+
+      window.addEventListener("beforeunload", function () {
+        trackThemeTime("beforeunload");
+      });
+    </script>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      :root {
+        --cream: #fff1e6;
+        --vanilla: #ffe0bd;
+        --peach: #ffb38a;
+        --bubblegum: #ff8fb3;
+        --coral: #ff6f61;
+        --cta-red: #ff3b5c;
+        --mint: #9be7c9;
+        --choco: #3a2118;
+        --white: #fffaf4;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          radial-gradient(circle at 16% 10%, rgba(255, 224, 189, 0.86) 0%, transparent 27%),
+          radial-gradient(circle at 88% 14%, rgba(255, 143, 179, 0.38) 0%, transparent 30%),
+          radial-gradient(circle at 12% 84%, rgba(155, 231, 201, 0.34) 0%, transparent 32%),
+          radial-gradient(circle at 82% 92%, rgba(255, 111, 97, 0.36) 0%, transparent 36%),
+          linear-gradient(135deg, #fff1e6 0%, #ffd6c8 44%, #ffe7ef 100%);
+        color: var(--choco);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        overflow-x: hidden;
+        padding: 20px 0 34px;
+      }
+
+      body.noScroll {
+        overflow: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(circle, rgba(255, 255, 255, 0.58) 2px, transparent 3px);
+        background-size: 34px 34px;
+        opacity: 0.34;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        width: 370px;
+        height: 370px;
+        right: -130px;
+        top: -130px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, rgba(255, 111, 97, 0.22) 0%, transparent 65%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 430px;
+        padding: 24px;
+        overflow: visible;
+      }
+
+      .card {
+        position: relative;
+        background: rgba(255, 250, 244, 0.89);
+        border: 2px solid rgba(255, 255, 255, 0.76);
+        border-radius: 30px;
+        padding: 42px 22px 24px;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.48) inset,
+          inset 0 18px 42px rgba(255, 255, 255, 0.28),
+          inset 0 -24px 44px rgba(255, 111, 97, 0.055);
+        backdrop-filter: blur(13px);
+        -webkit-backdrop-filter: blur(13px);
+      }
+
+      .themeToggle {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 3;
+        border: 2px solid rgba(255, 255, 255, 0.72);
+        background: rgba(255, 255, 255, 0.52);
+        color: var(--choco);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 900;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 8px 18px rgba(58, 33, 24, 0.12);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition:
+          transform 0.18s ease,
+          background 0.22s ease,
+          border-color 0.22s ease;
+      }
+
+      .themeToggle:hover {
+        transform: translateY(-1px);
+      }
+
+      .profile {
+        width: 124px;
+        height: 124px;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+        margin: 0 auto 18px;
+        border: 4px solid var(--white);
+        box-shadow:
+          0 0 0 5px rgba(255, 111, 97, 0.16),
+          0 0 0 10px rgba(255, 179, 138, 0.30),
+          0 14px 28px rgba(58, 33, 24, 0.18);
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: 40px;
+        line-height: 1.02;
+        font-weight: 900;
+        letter-spacing: -0.055em;
+        color: var(--choco);
+        text-shadow:
+          2px 3px 0 rgba(255, 224, 189, 0.94),
+          -1px -1px 0 rgba(255, 255, 255, 0.86);
+      }
+
+      .bio {
+        margin: 0 auto 8px;
+        color: rgba(58, 33, 24, 0.78);
+        font-size: 15px;
+        line-height: 1.45;
+        font-weight: 700;
+      }
+
+      .trust {
+        margin: 0 auto 10px;
+        color: rgba(58, 33, 24, 0.54);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .ageNote {
+        margin: 0 auto 22px;
+        max-width: 310px;
+        color: rgba(58, 33, 24, 0.48);
+        font-size: 11px;
+        line-height: 1.4;
+        font-weight: 800;
+      }
+
+      .links {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        max-width: 340px;
+        margin: 0 auto;
+      }
+
+      .btn {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 58px;
+        padding: 17px 18px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 17px;
+        font-weight: 900;
+        line-height: 1.2;
+        letter-spacing: 0.01em;
+        color: white;
+        text-align: center;
+        border: 2px solid rgba(255, 255, 255, 0.58);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+          0 10px 22px rgba(58, 33, 24, 0.16);
+        transition:
+          transform 0.18s ease,
+          opacity 0.18s ease,
+          box-shadow 0.22s ease,
+          border-color 0.22s ease,
+          background 0.22s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px) scale(1.018);
+        opacity: 1;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+          0 14px 26px rgba(58, 33, 24, 0.19);
+      }
+
+      .btn:active {
+        transform: scale(0.985);
+      }
+
+      .btn:focus-visible,
+      .themeToggle:focus-visible,
+      .legalButton:focus-visible,
+      .legalClose:focus-visible {
+        outline: 3px solid rgba(58, 33, 24, 0.90);
+        outline-offset: 3px;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -110%;
+        width: 42%;
+        height: 100%;
+        background: linear-gradient(
+          120deg,
+          transparent,
+          rgba(255, 255, 255, 0.42),
+          transparent
+        );
+        transform: skewX(-20deg);
+      }
+
+      .btn:hover::before {
+        left: 125%;
+        transition: left 0.7s ease;
+      }
+
+      .btnText {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1.1;
+      }
+
+      .btnTitle {
+        font-size: 17px;
+        font-weight: 900;
+      }
+
+      .btnSub {
+        margin-top: 4px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        opacity: 0.78;
+        text-transform: uppercase;
+      }
+
+      .snapchat {
+        background: linear-gradient(135deg, #fffc00, #ffb38a);
+        color: var(--choco);
+      }
+
+      .snapchat:hover {
+        transform: translateY(-2px) scale(1.03);
+      }
+
+      .instagram {
+        background: linear-gradient(135deg, #ffb38a, #ff8fb3);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+          0 0 30px rgba(255, 143, 179, 0.28),
+          0 12px 24px rgba(58, 33, 24, 0.18);
+      }
+
+      .instagram:hover {
+        transform: translateY(-2px) scale(1.03);
+      }
+
+      .twitter {
+        background: linear-gradient(135deg, #3a2118, #7a4028);
+      }
+
+      .telegram {
+        background: linear-gradient(135deg, #9be7c9, #ffb38a);
+        color: var(--choco);
+      }
+
+      .footer {
+        font-size: 12px;
+        font-weight: 800;
+        color: rgba(58, 33, 24, 0.46);
+        margin-top: 20px;
+      }
+
+      .legalFooter {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 18px auto 0;
+        color: rgba(58, 33, 24, 0.52);
+        font-size: 11px;
+        font-weight: 900;
+      }
+
+      .legalButton {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        padding: 2px 3px;
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+      }
+
+      .legalDivider {
+        opacity: 0.48;
+      }
+
+      .legalOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 30;
+        padding: 18px;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      .legalOverlay.isOpen {
+        display: flex;
+      }
+
+      .legalBox {
+        width: 100%;
+        max-width: 520px;
+        max-height: 82vh;
+        overflow: auto;
+        text-align: left;
+        border-radius: 26px;
+        padding: 22px;
+        background: rgba(255, 250, 244, 0.97);
+        color: var(--choco);
+        border: 2px solid rgba(255, 255, 255, 0.72);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.26);
+      }
+
+      .legalHeader {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 14px;
+      }
+
+      .legalClose {
+        border: 0;
+        border-radius: 999px;
+        background: rgba(58, 33, 24, 0.10);
+        color: var(--choco);
+        width: 34px;
+        height: 34px;
+        font-size: 18px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .legalContent h3 {
+        margin: 18px 0 6px;
+        font-size: 15px;
+      }
+
+      .legalContent p,
+      .legalContent li {
+        font-size: 13px;
+        line-height: 1.55;
+        color: rgba(58, 33, 24, 0.72);
+        font-weight: 700;
+      }
+
+      .legalContent a {
+        color: inherit;
+        font-weight: 900;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .legalContent strong {
+        color: rgba(58, 33, 24, 0.90);
+      }
+
+      .legalContent ul {
+        padding-left: 18px;
+      }
+
+      .mutedLegal {
+        color: rgba(58, 33, 24, 0.58);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      html[data-theme="dark"] body {
+        background:
+          radial-gradient(circle at 50% 0%, rgba(255, 111, 97, 0.20) 0%, rgba(255, 111, 97, 0.055) 28%, transparent 52%),
+          radial-gradient(circle at 50% 100%, rgba(255, 143, 179, 0.17) 0%, rgba(255, 143, 179, 0.055) 30%, transparent 56%),
+          #080506;
+        color: white;
+      }
+
+      html[data-theme="dark"] body::before {
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+        background-size: 38px 38px;
+        opacity: 1;
+        mask-image: radial-gradient(circle at center, black 0%, transparent 72%);
+      }
+
+      html[data-theme="dark"] body::after {
+        width: auto;
+        height: auto;
+        right: 0;
+        top: 0;
+        border-radius: 0;
+        background:
+          radial-gradient(circle at top center, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 14%, transparent 38%);
+      }
+
+      html[data-theme="dark"] .card {
+        background: rgba(17, 10, 8, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+          inset 0 18px 42px rgba(255, 255, 255, 0.025),
+          inset 0 -28px 56px rgba(255, 111, 97, 0.07);
+      }
+
+      html[data-theme="dark"] .themeToggle {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: white;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      }
+
+      html[data-theme="dark"] .profile {
+        border: 2px solid rgba(255, 255, 255, 0.13);
+        box-shadow:
+          0 0 0 4px rgba(255, 255, 255, 0.03),
+          0 0 30px rgba(255, 111, 97, 0.16),
+          0 0 20px rgba(255, 143, 179, 0.10);
+      }
+
+      html[data-theme="dark"] h1 {
+        color: white;
+        text-shadow: none;
+      }
+
+      html[data-theme="dark"] .bio {
+        color: rgba(255, 255, 255, 0.74);
+      }
+
+      html[data-theme="dark"] .trust,
+      html[data-theme="dark"] .ageNote {
+        color: rgba(255, 255, 255, 0.46);
+      }
+
+      html[data-theme="dark"] .footer,
+      html[data-theme="dark"] .legalFooter {
+        color: rgba(255, 255, 255, 0.48);
+      }
+
+      html[data-theme="dark"] .btn {
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+          0 8px 22px rgba(0, 0, 0, 0.35);
+      }
+
+      html[data-theme="dark"] .snapchat {
+        background: linear-gradient(135deg, #fffc00, #ffb000);
+        color: #1d1600;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+      }
+
+      html[data-theme="dark"] .instagram {
+        background: linear-gradient(135deg, #ff6f61, #b5315f);
+        border: 1px solid rgba(255, 255, 255, 0.20);
+      }
+
+      html[data-theme="dark"] .twitter {
+        background: linear-gradient(135deg, #2b201c, #111111);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+      }
+
+      html[data-theme="dark"] .twitter:hover {
+        background: linear-gradient(135deg, #382820, #1d1d1d);
+        border-color: rgba(255, 255, 255, 0.34);
+      }
+
+      html[data-theme="dark"] .telegram {
+        background: linear-gradient(135deg, #4f7d68, #7a4a32);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      html[data-theme="dark"] .telegram:hover {
+        background: linear-gradient(135deg, #5d9178, #8a563c);
+        border-color: rgba(255, 255, 255, 0.30);
+      }
+
+      html[data-theme="dark"] .legalBox {
+        background: rgba(17, 10, 8, 0.97);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: white;
+      }
+
+      html[data-theme="dark"] .legalContent p,
+      html[data-theme="dark"] .legalContent li {
+        color: rgba(255, 255, 255, 0.66);
+      }
+
+      html[data-theme="dark"] .legalContent strong {
+        color: rgba(255, 255, 255, 0.90);
+      }
+
+      html[data-theme="dark"] .mutedLegal {
+        color: rgba(255, 255, 255, 0.50);
+      }
+
+      html[data-theme="dark"] .legalClose {
+        background: rgba(255, 255, 255, 0.10);
+        color: white;
+      }
+
+      html[data-theme="dark"] .btn:focus-visible,
+      html[data-theme="dark"] .themeToggle:focus-visible,
+      html[data-theme="dark"] .legalButton:focus-visible,
+      html[data-theme="dark"] .legalClose:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.95);
+        outline-offset: 3px;
+      }
+
+      @media (max-width: 480px) {
+        body {
+          align-items: flex-start;
+        }
+
+        .wrap {
+          padding: 16px;
+        }
+
+        .card {
+          padding: 42px 18px 20px;
+          border-radius: 26px;
+        }
+
+        .themeToggle {
+          top: 14px;
+          right: 14px;
+          padding: 7px 11px;
+        }
+
+        h1 {
+          font-size: 35px;
+        }
+
+        .bio {
+          font-size: 15px;
+        }
+
+        .btn {
+          min-height: 60px;
+          font-size: 16px;
+          padding: 16px;
+          border-radius: 18px;
+        }
+
+        .links {
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="wrap">
+      <section class="card mainCard" aria-label="Main Peachy Timmy links">
+        <button
+          class="themeToggle"
+          type="button"
+          onclick="toggleTheme()"
+          aria-label="Toggle color mode"
+        >
+          <span class="themeIcon">🌙</span>
+          <span class="themeLabel">Dark</span>
+        </button>
+
+        <img
+          id="profileImage"
+          class="profile"
+          src="1x1_lightpic.jpg"
+          alt="Peachy Timmy profile picture"
+        />
+
+        <h1>Peachy Timmy</h1>
+
+        <p class="bio">🍑 peachy chaos • soft tease • bad ideas</p>
+        <p class="trust">cute pop • glossy mess • trouble energy</p>
+        <p class="ageNote">
+          Some links may contain adult content. 18+ only.
+        </p>
+
+        <div class="links">
+          <a
+            href="https://www.snapchat.com/add/REPLACE_WITH_TIMMY_SNAPCHAT"
+            class="btn snapchat"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open Snapchat"
+            data-link-key="snapchat"
+          >
+            <span class="btnText">
+              <span class="btnTitle">Snapchat 👻</span>
+              <span class="btnSub">quick snaps</span>
+            </span>
+          </a>
+
+          <a
+            href="https://www.instagram.com/REPLACE_WITH_TIMMY_INSTAGRAM/"
+            class="btn instagram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open Instagram"
+            data-link-key="instagram"
+          >
+            <span class="btnText">
+              <span class="btnTitle">Instagram ☀️</span>
+              <span class="btnSub">daily glow</span>
+            </span>
+          </a>
+
+          <a
+            href="https://x.com/REPLACE_WITH_TIMMY_X"
+            class="btn twitter"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open X"
+            data-link-key="x"
+          >
+            <span class="btnText">
+              <span class="btnTitle">X / Twitter 💬</span>
+              <span class="btnSub">teasers & updates</span>
+            </span>
+          </a>
+
+          <a
+            href="https://t.me/REPLACE_WITH_TIMMY_TELEGRAM"
+            class="btn telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open Telegram"
+            data-link-key="telegram"
+          >
+            <span class="btnText">
+              <span class="btnTitle">Telegram 🔒</span>
+              <span class="btnSub">private updates</span>
+            </span>
+          </a>
+        </div>
+
+        <p class="footer">Peachy Timmy Hub</p>
+      </section>
+
+      <footer class="legalFooter" aria-label="Legal footer">
+        <button class="legalButton" type="button" onclick="openLegalPanel('imprint')">
+          Impressum / Imprint
+        </button>
+        <span class="legalDivider">•</span>
+        <button class="legalButton" type="button" onclick="openLegalPanel('privacy')">
+          Privacy / Datenschutz
+        </button>
+        <span class="legalDivider">•</span>
+        <span>18+</span>
+      </footer>
+    </main>
+
+    <section
+      id="legalOverlay"
+      class="legalOverlay"
+      aria-label="Legal information"
+      aria-hidden="true"
+      onclick="handleLegalOverlayClick(event)"
+    >
+      <div class="legalBox" role="dialog" aria-modal="true">
+        <div class="legalHeader">
+          <button class="legalClose" type="button" onclick="closeLegalPanel()" aria-label="Close">
+            ×
+          </button>
+        </div>
+
+        <article class="legalPanel legalContent" data-legal-panel="imprint" hidden>
+          <h3>Impressum / Imprint</h3>
+
+          <p>
+            <strong>Angaben gemäß § 5 DDG</strong><br />
+            <span class="mutedLegal">Information according to Section 5 DDG</span>
+          </p>
+
+          <p>
+            Ekkarat Huayyai<br />
+            c/o IP-Management #10769<br />
+            Ludwig-Erhard-Straße 18<br />
+            20459 Hamburg<br />
+            Deutschland
+          </p>
+
+          <h3>Kontakt / Contact</h3>
+          <p>
+            E-Mail:
+            <a href="mailto:peachytimmy.hub@gmail.com">peachytimmy.hub@gmail.com</a>
+          </p>
+
+          <h3>Quelle / Source</h3>
+          <p>
+            Impressum-Privatschutz
+          </p>
+
+          <h3>Hinweis / Notice</h3>
+          <p>
+            Diese Website ist ein Creator-Linkhub. Einige ausgehende Links können Inhalte
+            für Erwachsene enthalten. Die Nutzung ist nur für Personen ab 18 Jahren bestimmt.
+          </p>
+
+          <p lang="en">
+            This website is a creator link hub. Some outgoing links may contain adult content.
+            Use is intended for adults aged 18 and over only.
+          </p>
+
+          <p>
+            <strong>Die deutsche Fassung ist maßgeblich.</strong><br />
+            <span lang="en">The German version is authoritative.</span>
+          </p>
+        </article>
+
+        <article class="legalPanel legalContent" data-legal-panel="privacy" hidden>
+          <h3>Datenschutzhinweis / Privacy Policy</h3>
+
+          <p>
+            Diese Datenschutzerklärung informiert darüber, welche personenbezogenen Daten beim Besuch dieser Website verarbeitet werden.
+          </p>
+
+          <p lang="en">
+            This privacy policy explains which personal data may be processed when visiting this website.
+          </p>
+
+          <h3>Verantwortlicher / Controller</h3>
+          <p>
+            Ekkarat Huayyai<br />
+            c/o IP-Management #10769<br />
+            Ludwig-Erhard-Straße 18<br />
+            20459 Hamburg<br />
+            Deutschland<br />
+            E-Mail:
+            <a href="mailto:peachytimmy.hub@gmail.com">peachytimmy.hub@gmail.com</a>
+          </p>
+
+          <h3>Hosting</h3>
+          <p>
+            Diese Website wird über GitHub Pages bereitgestellt. Beim Aufruf der Website können technische Zugriffsdaten verarbeitet werden, insbesondere IP-Adresse, Datum und Uhrzeit des Zugriffs, aufgerufene Dateien, Browserinformationen und Betriebssysteminformationen. Die Verarbeitung erfolgt zur Bereitstellung der Website, zur technischen Stabilität und zur Sicherheit.
+          </p>
+
+          <p lang="en">
+            This website is hosted via GitHub Pages. When visiting the website, technical access data may be processed, including IP address, date and time of access, requested files, browser information and operating system information. This processing is used to provide the website, maintain technical stability and ensure security.
+          </p>
+
+          <p>
+            Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Das berechtigte Interesse liegt im sicheren und zuverlässigen Betrieb dieser Website.
+          </p>
+
+          <h3>Lokaler Speicher / Local storage</h3>
+          <p>
+            Diese Website speichert die gewählte Darstellung, also Light Mode oder Dark Mode, lokal im Browser. Diese Speicherung dient dazu, die Auswahl des Nutzers zu merken.
+          </p>
+
+          <p lang="en">
+            This website stores the selected display mode, such as light mode or dark mode, locally in the browser. This is used to remember the user's preferences.
+          </p>
+
+          <h3>Google Analytics</h3>
+          <p>
+            Diese Website verwendet Google Analytics. Dabei können Informationen über die Nutzung dieser Website verarbeitet werden, zum Beispiel Seitenaufrufe, ausgehende Link-Klicks, Social-Klicks, Button-Impressionen, Theme-Nutzung und Zeit bis zum ersten Klick.
+          </p>
+
+          <p lang="en">
+            This website uses Google Analytics. Information about the use of this website may be processed, for example page views, outbound link clicks, social clicks, button impressions, theme usage and time to first click.
+          </p>
+
+          <p>
+            Anbieter ist Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Es kann nicht ausgeschlossen werden, dass Daten auch an Google LLC in den USA übermittelt werden.
+          </p>
+
+          <h3>Ausgehende Links / Outgoing links</h3>
+          <p>
+            Diese Website enthält Links zu externen Plattformen, darunter Snapchat, Instagram, X und Telegram. Beim Öffnen dieser Links gelten die Datenschutzbestimmungen der jeweiligen externen Anbieter.
+          </p>
+
+          <p lang="en">
+            This website contains links to external platforms, including Snapchat, Instagram, X and Telegram. When opening these links, the privacy policies of the respective external providers apply.
+          </p>
+
+          <h3>Inhalte ab 18 / Adult content</h3>
+          <p>
+            Einige ausgehende Links können Inhalte für Erwachsene enthalten. Diese Website richtet sich nur an Personen ab 18 Jahren.
+          </p>
+
+          <p lang="en">
+            Some outgoing links may contain adult content. This website is intended for adults aged 18 and over only.
+          </p>
+
+          <h3>Speicherdauer / Storage period</h3>
+          <p>
+            Lokal gespeicherte Einstellungen bleiben im Browser gespeichert, bis sie gelöscht oder geändert werden. Serverseitige Zugriffsdaten werden durch den Hosting-Anbieter nach dessen eigenen Regeln verarbeitet. Analytics-Daten werden entsprechend den Einstellungen bei Google Analytics verarbeitet.
+          </p>
+
+          <h3>Deine Rechte / Your rights</h3>
+          <p>
+            Betroffene Personen haben nach Maßgabe der DSGVO insbesondere Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch.
+          </p>
+
+          <p lang="en">
+            Depending on applicable law, data subjects may have rights to access, rectification, deletion, restriction of processing, data portability and objection.
+          </p>
+
+          <h3>Beschwerderecht / Right to lodge a complaint</h3>
+          <p>
+            Du hast das Recht, dich bei einer zuständigen Datenschutzaufsichtsbehörde zu beschweren.
+          </p>
+
+          <p lang="en">
+            You have the right to lodge a complaint with a competent data protection supervisory authority.
+          </p>
+
+          <p>
+            <strong>Die deutsche Fassung ist maßgeblich.</strong><br />
+            <span lang="en">The German version is authoritative.</span>
+          </p>
+        </article>
+      </div>
+    </section>
+  </body>
+</html>
